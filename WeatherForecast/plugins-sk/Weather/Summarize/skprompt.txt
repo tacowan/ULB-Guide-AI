@@ -1,0 +1,7 @@
+---
+{{$data}}
+---
+ 
+The JSON document above is a weather forecast for {{$location}}
+Summarize the forecast using the style of a friendly weather forecaster, answering
+{{$prompt}}

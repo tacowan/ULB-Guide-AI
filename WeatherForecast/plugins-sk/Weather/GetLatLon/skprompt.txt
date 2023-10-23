@@ -1,0 +1,6 @@
+Send the latitude, longitude of {{$location}} to output.
+
+Output format:
+latitude,longitude
+
+Output:
