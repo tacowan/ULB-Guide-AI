@@ -4,5 +4,7 @@
   "endpoint": "https:// ... your endpoint ... .openai.azure.com/",
   "apikey":   "... your Azure OpenAI key ...", 
   "tomorrowio": "... your tomorrow.io API key ...",
+  "amadeusClientID": "clientID", 
+  "amadeusSecret": "client_secret",
   "org":      "" // it's not used for azure, but the parser requires it so do not delete
 }

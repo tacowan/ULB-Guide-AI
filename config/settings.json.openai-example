@@ -4,5 +4,7 @@
   "model":  "gpt-3.5-turbo",
   "apikey": "... your OpenAI key ...",
   "tomorrowio": "... your tomorrow.io API key ...",
+  "amadeusClientID": "clientID", 
+  "amadeusSecret": "client_secret",
   "org":    ""
 }
