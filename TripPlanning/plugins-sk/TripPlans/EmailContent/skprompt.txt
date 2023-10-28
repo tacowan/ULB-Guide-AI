@@ -1,0 +1,6 @@
+{{$input}}
+----
+
+The JSON document above is a list of low cost destinations. 
+Pretend you are a travel agent.
+Transfrom the JSON into a short friendly email.

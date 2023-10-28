@@ -1,0 +1,8 @@
+JFK, ORD
+-------
+DO NOT USE ANY OF THE ABOVE AIRPORTS
+
+Choose five major US airports.
+Show the answer as comma seperated, 3-letter IATA airport codes
+
+Answer:

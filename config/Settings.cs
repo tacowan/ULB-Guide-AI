@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Net.Http;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -19,13 +20,16 @@ public static class Settings
     private const string SecretKey = "apikey";
     private const string OrgKey = "org";
 
+    private const string AmadeusClientID = "amadeusClientID";
+    private const string AmadeusSecret = "amadeusSecret";
+
     private const string TomorrowioSecretKey = "tomorrowio";
     private const bool StoreConfigOnFile = true;
 
     // Prompt user for Azure Endpoint URL
     public static async Task<string> AskAzureEndpoint(bool _useAzureOpenAI = true, string configFile = DefaultConfigFile)
     {
-        var (useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey) = ReadSettings(_useAzureOpenAI, configFile);
+        var (useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey, amadeusClientID, amadeusSecret  ) = ReadSettings(_useAzureOpenAI, configFile);
 
         // If needed prompt user for Azure endpoint
         if (useAzureOpenAI && string.IsNullOrWhiteSpace(azureEndpoint))
@@ -33,7 +37,7 @@ public static class Settings
             azureEndpoint = await InteractiveKernel.GetInputAsync("Please enter your Azure OpenAI endpoint");
         }
 
-        WriteSettings(configFile, useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey);
+        WriteSettings(configFile, useAzureOpenAI, model, azureEndpoint, apiKey, orgId,  tomorrowioApiKey, amadeusClientID, amadeusSecret );
 
         // Print report
         if (useAzureOpenAI)
@@ -49,7 +53,7 @@ public static class Settings
     // Prompt user for OpenAI model name / Azure OpenAI deployment name
     public static async Task<string> AskModel(bool _useAzureOpenAI = true, string configFile = DefaultConfigFile)
     {
-        var (useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey) = ReadSettings(_useAzureOpenAI, configFile);
+        var (useAzureOpenAI, model, azureEndpoint, apiKey, orgId,  tomorrowioApiKey, amadeusClientID, amadeusSecret ) = ReadSettings(_useAzureOpenAI, configFile);
 
         // If needed prompt user for model name / deployment name
         if (string.IsNullOrWhiteSpace(model))
@@ -65,7 +69,7 @@ public static class Settings
             }
         }
 
-        WriteSettings(configFile, useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey);
+        WriteSettings(configFile, useAzureOpenAI, model, azureEndpoint, apiKey, orgId,  tomorrowioApiKey, amadeusClientID, amadeusSecret );
 
         // Print report
         if (useAzureOpenAI)
@@ -87,25 +91,25 @@ public static class Settings
     // Prompt user for API Key
     public static async Task<string> AskApiKey(bool _useAzureOpenAI = true, string configFile = DefaultConfigFile)
     {
-        var (useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey) = ReadSettings(_useAzureOpenAI, configFile);
+        var (useAzureOpenAI, model, azureEndpoint, apiKey, orgId,  tomorrowioApiKey, amadeusClientID, amadeusSecret ) = ReadSettings(_useAzureOpenAI, configFile);
 
         // If needed prompt user for API key
         if (string.IsNullOrWhiteSpace(apiKey))
         {
             if (useAzureOpenAI)
             {
-                var pw  = await InteractiveKernel.GetPasswordAsync("Please enter your Azure OpenAI API key");
+                var pw = await InteractiveKernel.GetPasswordAsync("Please enter your Azure OpenAI API key");
                 apiKey = pw.GetClearTextPassword();
                 orgId = "";
             }
             else
             {
-                var pw  = await InteractiveKernel.GetPasswordAsync("Please enter your OpenAI API key");
+                var pw = await InteractiveKernel.GetPasswordAsync("Please enter your OpenAI API key");
                 apiKey = pw.GetClearTextPassword();
             }
         }
 
-        WriteSettings(configFile, useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey);
+        WriteSettings(configFile, useAzureOpenAI, model, azureEndpoint, apiKey, orgId,  tomorrowioApiKey, amadeusClientID, amadeusSecret );
 
         // Print report
         Console.WriteLine("Settings: " + (string.IsNullOrWhiteSpace(apiKey)
@@ -117,25 +121,25 @@ public static class Settings
 
     public static async Task<string> AskTomorrowioApiKey(bool _useAzureOpenAI = true, string configFile = DefaultConfigFile)
     {
-        var (useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey) = ReadSettings(_useAzureOpenAI, configFile);
+        var (useAzureOpenAI, model, azureEndpoint, apiKey, orgId,  tomorrowioApiKey, amadeusClientID, amadeusSecret ) = ReadSettings(_useAzureOpenAI, configFile);
 
         // If needed prompt user for API key
         if (string.IsNullOrWhiteSpace(tomorrowioApiKey))
         {
             if (useAzureOpenAI)
             {
-                var pw  = await InteractiveKernel.GetPasswordAsync("Please enter your tomorrow.io API key");
+                var pw = await InteractiveKernel.GetPasswordAsync("Please enter your tomorrow.io API key");
                 tomorrowioApiKey = pw.GetClearTextPassword();
                 orgId = "";
             }
             else
             {
-                var pw  = await InteractiveKernel.GetPasswordAsync("Please enter your tomorrow.io API key");
+                var pw = await InteractiveKernel.GetPasswordAsync("Please enter your tomorrow.io API key");
                 tomorrowioApiKey = pw.GetClearTextPassword();
             }
         }
 
-        WriteSettings(configFile, useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey);
+        WriteSettings(configFile, useAzureOpenAI, model, azureEndpoint, apiKey, orgId,  tomorrowioApiKey, amadeusClientID, amadeusSecret );
 
         // Print report
         Console.WriteLine("Settings: " + (string.IsNullOrWhiteSpace(apiKey)
@@ -148,7 +152,7 @@ public static class Settings
     // Prompt user for OpenAI Organization Id
     public static async Task<string> AskOrg(bool _useAzureOpenAI = true, string configFile = DefaultConfigFile)
     {
-        var (useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey) = ReadSettings(_useAzureOpenAI, configFile);
+        var (useAzureOpenAI, model, azureEndpoint, apiKey, orgId,  tomorrowioApiKey, amadeusClientID, amadeusSecret ) = ReadSettings(_useAzureOpenAI, configFile);
 
         // If needed prompt user for OpenAI Org Id
         if (!useAzureOpenAI && string.IsNullOrWhiteSpace(orgId))
@@ -156,13 +160,13 @@ public static class Settings
             orgId = await InteractiveKernel.GetInputAsync("Please enter your OpenAI Organization Id (enter 'NONE' to skip)");
         }
 
-        WriteSettings(configFile, useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey);
+        WriteSettings(configFile, useAzureOpenAI, model, azureEndpoint, apiKey, orgId,  tomorrowioApiKey, amadeusClientID, amadeusSecret );
 
         return orgId;
     }
 
     // Load settings from file
-    public static (bool useAzureOpenAI, string model, string azureEndpoint, string apiKey, string orgId, string tomorrowioApiKey)
+    public static (bool useAzureOpenAI, string model, string azureEndpoint, string apiKey, string orgId, string tomorrowioApiKey, string amadeusClientID, string amadeusSecret )
         LoadFromFile(string configFile = DefaultConfigFile)
     {
         if (!File.Exists(configFile))
@@ -181,14 +185,17 @@ public static class Settings
             string apiKey = config[SecretKey];
             string orgId = config[OrgKey];
             string tomorrowioApiKey = config[TomorrowioSecretKey];
+            string amadeusClientID = config[AmadeusClientID];
+            string amadeusSecret = config[AmadeusSecret];
+
             if (orgId == "none") { orgId = ""; }
 
-            return (useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey);
+            return (useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey, amadeusClientID, amadeusSecret );
         }
         catch (Exception e)
         {
             Console.WriteLine("Something went wrong: " + e.Message);
-            return (true, "", "", "", "", "");
+            return (true, "", "", "", "", "","", "");
         }
     }
 
@@ -209,7 +216,7 @@ public static class Settings
     }
 
     // Read and return settings from file
-    private static (bool useAzureOpenAI, string model, string azureEndpoint, string apiKey, string orgId, string tomorrowioApiKey)
+    private static (bool useAzureOpenAI, string model, string azureEndpoint, string apiKey, string orgId, string tomorrowioApiKey, string amadeusClientID, string amadeusSecret )
         ReadSettings(bool _useAzureOpenAI, string configFile)
     {
         // Save the preference set in the notebook
@@ -219,12 +226,14 @@ public static class Settings
         string apiKey = "";
         string orgId = "";
         string tomorrowioApiKey = "";
+        string amadeusClientID = "";
+        string amadeusSecret = "";
 
         try
         {
             if (File.Exists(configFile))
             {
-                (useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey) = LoadFromFile(configFile);
+                (useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey, amadeusClientID, amadeusSecret ) = LoadFromFile(configFile);
             }
         }
         catch (Exception e)
@@ -242,14 +251,17 @@ public static class Settings
             apiKey = "";
             orgId = "";
             tomorrowioApiKey = "";
+            amadeusClientID = "";
+            amadeusSecret = "";
+            
         }
 
-        return (useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey);
+        return (useAzureOpenAI, model, azureEndpoint, apiKey, orgId, tomorrowioApiKey, amadeusClientID, amadeusSecret );
     }
 
     // Write settings to file
     private static void WriteSettings(
-        string configFile, bool useAzureOpenAI, string model, string azureEndpoint, string apiKey, string orgId, string tomorrowioApiKey)
+        string configFile, bool useAzureOpenAI, string model, string azureEndpoint, string apiKey, string orgId, string tomorrowioApiKey, string amadeusClientID, string amadeusSecret)
     {
         try
         {
@@ -262,7 +274,9 @@ public static class Settings
                     { EndpointKey, azureEndpoint },
                     { SecretKey, apiKey },
                     { OrgKey, orgId },
-                    { TomorrowioSecretKey, tomorrowioApiKey}
+                    { TomorrowioSecretKey, tomorrowioApiKey},
+                    { AmadeusClientID, amadeusClientID},
+                    { AmadeusSecret, amadeusSecret}
                 };
 
                 var options = new JsonSerializerOptions { WriteIndented = true };
@@ -286,5 +300,28 @@ public static class Settings
                 Console.WriteLine("Something went wrong: " + e.Message);
             }
         }
+    }
+
+    public static async Task<string> ConnectOAuth(string client, string secret)
+    {
+        // create an HTTP client with base address "https://test.api.amadeus.com"
+        var http = new HttpClient { BaseAddress = new Uri("https://test.api.amadeus.com") };
+
+        var message = new HttpRequestMessage(HttpMethod.Post, "/v1/security/oauth2/token");
+        message.Content = new StringContent(
+            $"grant_type=client_credentials&client_id={client}&client_secret={secret}",
+            Encoding.UTF8, "application/x-www-form-urlencoded"
+        );
+
+        var results = await http.SendAsync(message);
+        await using var stream = await results.Content.ReadAsStreamAsync();
+        var oauthResults = await JsonSerializer.DeserializeAsync<OAuthResults>(stream);
+
+        return oauthResults.access_token;
+    }
+
+    private class OAuthResults
+    {
+        public string access_token { get; set; }
     }
 }
