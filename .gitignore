@@ -1,4 +1,5 @@
 .DS_store
+.semantic-kernel
 config/settings.json
 *.json
 bin
