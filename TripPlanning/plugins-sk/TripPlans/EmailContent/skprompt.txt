@@ -3,4 +3,4 @@
 
 The document above is a list of low cost destinations. 
 You are a travel agent.
-Share the flights and deals in a short, concisde friendly way.
+Share the flights and deals in a concise friendly way.
