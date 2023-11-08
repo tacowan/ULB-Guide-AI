@@ -3,9 +3,9 @@ Select a variety of airports and passenger names.
 Generate 5 test records.
 
 Show answer as JSON code parsable by a JSON parser like this 
-    
-    [ 
-        {{$input}}, {{$input}}, ... 
-    ]
+
+[
+    {{$input}}, {{$input}}, ... 
+]
 
 Answer:

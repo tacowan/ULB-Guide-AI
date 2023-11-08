@@ -19,14 +19,21 @@ public class ReservationSystemSkill {
     public ReservationSystemSkill() { 
         
     }
-
     public ReservationSystemSkill(PNR[] testData) { 
         this.testData = testData;    
     }
 
     public ReservationSystemSkill(string testData) { 
         this.testData = JsonSerializer.Deserialize<PNR[]>(testData);    
-    }   
+    }
+
+    public string summarizeTestData() {
+        string result = "";
+        foreach(var pnr in testData) {
+            result += $"{pnr.passenger.lastName}, {pnr.passenger.firstName}, {pnr.pnr}, {pnr.flight.flightNumber} \n";
+        }
+        return result;
+    }
 
     [SKFunction, Description("Change to aisle seat")]
     public async Task<string> changeAisleSeat(string pnr_number)
