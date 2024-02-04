@@ -8,7 +8,7 @@ Embark on an AI adventure with 'The Ultralight Backpackers Guide to AI' GitHub r
 
 You'll need to have Visual Studio Code (VS Code) installed on your computer with .NET 7. Then, you'll need to install a special extension that lets you run Jupyter notebooks within VS Code. Lastly, you can explore AI driven weather forecasting to your heart's content by stepping through the [Weather Forecast notebook](./WeatherForecast/notebook.ipynb) after you've installed your OpenAI or Azure OpenAI key.
 
-### Step 1: Set up your environment for running the .C# notebooks
+### Step 1: Set up your environment for running .C# notebooks
 
 1. [Install .NET 7](https://dotnet.microsoft.com/download/dotnet/7.0)
 2. [Install Visual Studio Code (VS Code)](https://code.visualstudio.com)
